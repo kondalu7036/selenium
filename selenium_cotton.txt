@@ -1,0 +1,46 @@
+package practice;
+
+import java.time.Duration;
+import java.util.Set;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class contacts {
+	public static void main(String[] args) throws InterruptedException {
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		driver.get("http://localhost:8888/");
+		String main = driver.getWindowHandle();
+		System.out.println(main);
+		driver.findElement(By.name("user_name")).sendKeys("admin");
+		driver.findElement(By.name("user_password")).sendKeys("admin");
+		driver.findElement(By.xpath("//input[@type='submit']")).submit();
+
+		driver.findElement(By.xpath("//a[text()='Contacts']")).click();
+		driver.findElement(By.xpath("//img[@title='Create Contact...']")).click();
+
+		driver.findElement(By.name("lastname")).sendKeys("konda");
+		WebElement org = driver.findElement(By.xpath("(//img[@title='Select'])[1]"));
+		org.click();
+
+		Set<String> parentandchild = driver.getWindowHandles();
+		for (String s1 : parentandchild) {
+			System.out.println(s1);
+			if (!s1.equals(main)) {
+				driver.manage().window().maximize();
+				driver.switchTo().window(s1);
+				driver.findElement(By.linkText("Cotton Bussiness")).click();
+		
+			}
+		}
+		driver.switchTo().window(main);
+		JavascriptExecutor js=(JavascriptExecutor) driver;
+		WebElement save = driver.findElement(By.xpath("//input[contains(@class,'crmButton')]"));
+		js.executeScript("arguments[0].click();",save );
+		
+	}
+}
